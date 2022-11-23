@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>WebSocket Chat</title>
+  </head>
+
+  <script type="module">
+    const addr = "ws://localhost:3000/chat"
+    const socket = new WebSocket(addr)
+
+    socket.onmessage = ({ data }) => {
+      const elm = document.createElement("p")
+      const json = JSON.parse(data)
+      elm.textContent = `${json.emoji}：${json.text}`
+
+      const receive = document.getElementById("receive")
+      receive.appendChild(elm)
+    }
+
+    const form = document.getElementById("form")
+    form.onsubmit = (e) => {
+      const message = document.getElementById("message")
+      if (!message) {
+        return
+      }
+
+      socket.send(message.value)
+      message.value = ""
+      
+      e.preventDefault();
+    }
+  </script>
+
+  <body>
+    <h1>WebSocket Test</h1>
+    <div id="receive"></div>
+    <form id="form">
+      <input type="text" id="message"/>
+      <button type="submit">Send</button>
+    </form>
+  </body>
+</html>
